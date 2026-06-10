@@ -1,0 +1,8 @@
+numpy
+pandas
+scikit-learn==1.6.1
+xgboost==3.2.0
+lightgbm==4.6.0
+shap==0.52.0
+matplotlib
+optuna

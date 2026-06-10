@@ -1,10 +1,12 @@
+%%writefile metsim.py
 """metsim.py - Patient-level what-if simulation for metabolic syndrome risk.
-
 Loads simulator_artifacts.pkl (trained sex-stratified models, calibrators,
 plausibility constraints) and lets a user explore how plausibility-constrained
 changes in modifiable factors affect an individual's calibrated risk, with a
 paired SHAP explanation. No patient-level data is required at runtime.
 """
+import warnings
+warnings.filterwarnings("ignore")
 import numpy as np
 import pickle
 try:
@@ -30,9 +32,6 @@ class MetSimulator:
         return x, preds
 
     def simulate_patient(self, profile, sex, has_lab=True, modifications=None):
-        """profile: dict {feature: value}; unspecified features use training medians.
-        modifications: dict {simulable_feature: new_value}. Deltas are clipped to the
-        sex-specific plausible range (5th-95th percentile of incident deltas)."""
         key, sexo, cfg = self._key(sex, has_lab)
         cal = self.A["calibrators"][key]
         x0, preds = self._vector(key, profile)
@@ -74,7 +73,8 @@ class MetSimulator:
         import matplotlib.pyplot as plt
         if res["shap_baseline"] is None:
             raise RuntimeError("Install shap to use plot_simulation.")
-        feats = res["features"]; sv0, sv1 = res["shap_baseline"], res["shap_modified"]
+        feats = res["features"]
+        sv0, sv1 = res["shap_baseline"], res["shap_modified"]
         order = np.argsort(np.abs(sv0))[::-1][:top][::-1]
         names = [feats[i] for i in order]
         fig, (axS, axR) = plt.subplots(1, 2, figsize=(13, 5),

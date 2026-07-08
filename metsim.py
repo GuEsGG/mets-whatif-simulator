@@ -1,4 +1,3 @@
-%%writefile metsim.py
 """metsim.py - Patient-level what-if simulation for metabolic syndrome risk.
 Loads simulator_artifacts.pkl (trained sex-stratified models, calibrators,
 plausibility constraints) and lets a user explore how plausibility-constrained
